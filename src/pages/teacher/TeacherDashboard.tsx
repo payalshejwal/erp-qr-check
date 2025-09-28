@@ -1,0 +1,179 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { QrCode, LogOut, Clock, Users, FileText } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import QRCodeGenerator from "@/components/QRCodeGenerator";
+import ManualAttendance from "@/components/ManualAttendance";
+
+const TeacherDashboard = () => {
+  const navigate = useNavigate();
+  const [selectedSession, setSelectedSession] = useState<any>(null);
+  const [showManualAttendance, setShowManualAttendance] = useState(false);
+
+  // Mock timetable data
+  const timetable = [
+    {
+      id: 1,
+      subject: "Computer Science 101",
+      class: "CS-A",
+      time: "09:00 - 10:30",
+      day: "Monday",
+      status: "upcoming"
+    },
+    {
+      id: 2,
+      subject: "Data Structures",
+      class: "CS-B", 
+      time: "11:00 - 12:30",
+      day: "Monday",
+      status: "active"
+    },
+    {
+      id: 3,
+      subject: "Algorithms",
+      class: "CS-A",
+      time: "14:00 - 15:30", 
+      day: "Monday",
+      status: "upcoming"
+    },
+    {
+      id: 4,
+      subject: "Database Systems",
+      class: "CS-C",
+      time: "16:00 - 17:30",
+      day: "Monday", 
+      status: "upcoming"
+    }
+  ];
+
+  const handleGenerateQR = (session: any) => {
+    setSelectedSession(session);
+    setShowManualAttendance(false);
+  };
+
+  const handleManualAttendance = (session: any) => {
+    setSelectedSession(session);
+    setShowManualAttendance(true);
+  };
+
+  const handleLogout = () => {
+    navigate("/");
+  };
+
+  if (selectedSession && !showManualAttendance) {
+    return <QRCodeGenerator session={selectedSession} onBack={() => setSelectedSession(null)} />;
+  }
+
+  if (selectedSession && showManualAttendance) {
+    return <ManualAttendance session={selectedSession} onBack={() => setSelectedSession(null)} />;
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background to-teacher-soft">
+      <div className="container mx-auto p-6">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-teacher">Teacher Dashboard</h1>
+            <p className="text-muted-foreground">Manage your classes and attendance</p>
+          </div>
+          <Button variant="outline" onClick={handleLogout}>
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
+          </Button>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Today's Classes</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">4</div>
+              <p className="text-xs text-muted-foreground">1 active, 3 upcoming</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Students</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">156</div>
+              <p className="text-xs text-muted-foreground">Across all classes</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Avg Attendance</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">87%</div>
+              <p className="text-xs text-muted-foreground">This semester</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Timetable */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-teacher">Today's Schedule</CardTitle>
+            <CardDescription>Manage attendance for your classes</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {timetable.map((session) => (
+                <div
+                  key={session.id}
+                  className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold">{session.subject}</h3>
+                      <Badge 
+                        variant={session.status === 'active' ? 'default' : 'secondary'}
+                        className={session.status === 'active' ? 'bg-success' : ''}
+                      >
+                        {session.status}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Class: {session.class} • {session.time}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="teacher-outline"
+                      size="sm"
+                      onClick={() => handleManualAttendance(session)}
+                    >
+                      <FileText className="h-4 w-4 mr-1" />
+                      Manual
+                    </Button>
+                    <Button
+                      variant="teacher"
+                      size="sm"
+                      onClick={() => handleGenerateQR(session)}
+                    >
+                      <QrCode className="h-4 w-4 mr-1" />
+                      Generate QR
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default TeacherDashboard;

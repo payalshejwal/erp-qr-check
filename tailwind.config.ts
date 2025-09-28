@@ -22,10 +22,35 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          soft: "hsl(var(--primary-soft))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
+        },
+        teacher: {
+          DEFAULT: "hsl(var(--teacher))",
+          foreground: "hsl(var(--teacher-foreground))",
+          soft: "hsl(var(--teacher-soft))",
+          accent: "hsl(var(--teacher-accent))",
+        },
+        student: {
+          DEFAULT: "hsl(var(--student))",
+          foreground: "hsl(var(--student-foreground))",
+          soft: "hsl(var(--student-soft))",
+          accent: "hsl(var(--student-accent))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        error: {
+          DEFAULT: "hsl(var(--error))",
+          foreground: "hsl(var(--error-foreground))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
