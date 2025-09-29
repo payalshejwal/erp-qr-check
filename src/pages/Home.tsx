@@ -20,38 +20,6 @@ const Home = () => {
           </p>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          <Card className="text-center">
-            <CardHeader>
-              <QrCode className="h-8 w-8 mx-auto text-primary mb-2" />
-              <CardTitle>QR Code Generation</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Teachers generate unique QR codes for each class session</p>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center">
-            <CardHeader>
-              <MapPin className="h-8 w-8 mx-auto text-primary mb-2" />
-              <CardTitle>Location Verification</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Ensure students are on campus when marking attendance</p>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center">
-            <CardHeader>
-              <Users className="h-8 w-8 mx-auto text-primary mb-2" />
-              <CardTitle>Real-time Tracking</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Instant attendance recording and monitoring</p>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Portal Selection */}
         <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
