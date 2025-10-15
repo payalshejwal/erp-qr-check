@@ -32,7 +32,10 @@ const Home = () => {
               >
                 Login
               </Button>
-              <button className="text-sm text-primary hover:underline">
+              <button 
+                onClick={() => navigate('/teacher/signup')}
+                className="text-sm text-primary hover:underline"
+              >
                 Create an account
               </button>
             </div>
@@ -51,7 +54,10 @@ const Home = () => {
               >
                 Login
               </Button>
-              <button className="text-sm text-primary hover:underline">
+              <button 
+                onClick={() => navigate('/student/signup')}
+                className="text-sm text-primary hover:underline"
+              >
                 Create an account
               </button>
             </div>
