@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { GraduationCap, Users } from "lucide-react";
+import { GraduationCap, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -23,7 +23,7 @@ const Home = () => {
           <Card className="bg-card/50 backdrop-blur border-border/50 p-8 hover:bg-card/70 transition-all duration-300">
             <div className="flex flex-col items-center space-y-6">
               <div className="w-20 h-20 bg-card rounded-2xl flex items-center justify-center border border-border/50">
-                <GraduationCap className="h-10 w-10 text-foreground" />
+                <User className="h-10 w-10 text-foreground" />
               </div>
               <h2 className="text-2xl font-semibold text-foreground">Teacher Portal</h2>
               <Button 
