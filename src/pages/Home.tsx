@@ -29,9 +29,6 @@ const Home = () => {
                 <GraduationCap className="h-8 w-8 text-teacher" />
               </div>
               <CardTitle className="text-2xl text-teacher">Teacher Portal</CardTitle>
-              <CardDescription>
-                Generate QR codes, manage attendance, and view class schedules
-              </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
               <Button 
@@ -51,9 +48,6 @@ const Home = () => {
                 <Users className="h-8 w-8 text-student" />
               </div>
               <CardTitle className="text-2xl text-student">Student Portal</CardTitle>
-              <CardDescription>
-                Scan QR codes to mark attendance and view your records
-              </CardDescription>
             </CardHeader>
             <CardContent className="text-center">
               <Button 
