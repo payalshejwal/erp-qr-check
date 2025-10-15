@@ -1,70 +1,61 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Users, QrCode, MapPin } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { GraduationCap, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="container mx-auto max-w-2xl">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center mb-4">
-            <GraduationCap className="h-12 w-12 text-primary mr-3" />
-            <h1 className="text-4xl font-bold text-foreground">EduAttend</h1>
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center mb-6">
+            <GraduationCap className="h-10 w-10 text-primary mr-3" />
+            <h1 className="text-4xl font-bold text-foreground">Smart Attendance System</h1>
           </div>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Automatic Attendance Monitoring with QR Codes and Geolocation
-          </p>
         </div>
-
 
         {/* Portal Selection */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <Card className="hover:shadow-xl transition-all duration-300 border-teacher/20 hover:border-teacher">
-            <CardHeader className="text-center">
-              <div className="w-16 h-16 bg-teacher-soft rounded-full flex items-center justify-center mx-auto mb-4">
-                <GraduationCap className="h-8 w-8 text-teacher" />
+        <div className="grid gap-8">
+          {/* Teacher Portal Card */}
+          <Card className="bg-card/50 backdrop-blur border-border/50 p-8 hover:bg-card/70 transition-all duration-300">
+            <div className="flex flex-col items-center space-y-6">
+              <div className="w-20 h-20 bg-card rounded-2xl flex items-center justify-center border border-border/50">
+                <GraduationCap className="h-10 w-10 text-foreground" />
               </div>
-              <CardTitle className="text-2xl text-teacher">Teacher Portal</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
+              <h2 className="text-2xl font-semibold text-foreground">Teacher Portal</h2>
               <Button 
-                variant="teacher" 
-                size="lg" 
-                className="w-full"
                 onClick={() => navigate('/teacher/login')}
+                className="w-40 bg-primary hover:bg-primary/90 text-primary-foreground"
               >
-                Access Teacher Portal
+                Login
               </Button>
-            </CardContent>
+              <button className="text-sm text-primary hover:underline">
+                Create an account
+              </button>
+            </div>
           </Card>
 
-          <Card className="hover:shadow-xl transition-all duration-300 border-student/20 hover:border-student">
-            <CardHeader className="text-center">
-              <div className="w-16 h-16 bg-student-soft rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-student" />
+          {/* Student Portal Card */}
+          <Card className="bg-card/50 backdrop-blur border-border/50 p-8 hover:bg-card/70 transition-all duration-300">
+            <div className="flex flex-col items-center space-y-6">
+              <div className="w-20 h-20 bg-card rounded-2xl flex items-center justify-center border border-border/50">
+                <GraduationCap className="h-10 w-10 text-foreground" />
               </div>
-              <CardTitle className="text-2xl text-student">Student Portal</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
+              <h2 className="text-2xl font-semibold text-foreground">Student Portal</h2>
               <Button 
-                variant="student" 
-                size="lg" 
-                className="w-full"
                 onClick={() => navigate('/student/login')}
+                className="w-40 bg-primary hover:bg-primary/90 text-primary-foreground"
               >
-                Access Student Portal
+                Login
               </Button>
-            </CardContent>
+              <button className="text-sm text-primary hover:underline">
+                Create an account
+              </button>
+            </div>
           </Card>
-        </div>
-
-        {/* Footer */}
-        <div className="text-center mt-12 text-muted-foreground">
-          <p>Prototype for Automatic Attendance Monitoring System</p>
         </div>
       </div>
     </div>

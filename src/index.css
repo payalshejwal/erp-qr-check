@@ -8,35 +8,35 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Educational platform color palette */
-    --background: 240 10% 98%;
-    --foreground: 240 10% 10%;
+    /* Dark theme - default */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 10%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 10%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 98%;
 
     /* Primary - Professional Blue */
     --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
-    --primary-soft: 217 91% 95%;
+    --primary-soft: 217 91% 20%;
 
-    /* Secondary - Warm Gray */
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 10% 10%;
+    /* Secondary - Dark Gray */
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 98%;
 
     /* Teacher Portal - Deep Blue */
-    --teacher: 220 100% 50%;
+    --teacher: 220 100% 60%;
     --teacher-foreground: 0 0% 100%;
-    --teacher-soft: 220 100% 96%;
-    --teacher-accent: 220 100% 40%;
+    --teacher-soft: 220 100% 20%;
+    --teacher-accent: 220 100% 50%;
 
     /* Student Portal - Emerald Green */
     --student: 158 64% 52%;
     --student-foreground: 0 0% 100%;
-    --student-soft: 158 64% 96%;
+    --student-soft: 158 64% 20%;
     --student-accent: 158 64% 42%;
 
     /* Status Colors */
@@ -47,36 +47,29 @@ All colors MUST be HSL.
     --error: 0 84% 60%;
     --error-foreground: 0 0% 100%;
 
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 65%;
 
-    --accent: 240 5% 96%;
-    --accent-foreground: 240 10% 10%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 98%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
     --ring: 217 91% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 0 0% 10%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 217 91% 60%;
   }
 
   .dark {
