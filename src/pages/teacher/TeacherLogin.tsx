@@ -19,7 +19,7 @@ const TeacherLogin = () => {
 
     // Simulate API call
     setTimeout(() => {
-      if (username === "teacher" && password === "password") {
+      if (username === "teacher" && password === "teacher123") {
         toast({
           title: "Login Successful",
           description: "Welcome to the Teacher Portal!",
@@ -28,7 +28,7 @@ const TeacherLogin = () => {
       } else {
         toast({
           title: "Login Failed",
-          description: "Invalid username or password. Try teacher/password",
+          description: "Invalid username or password. Try teacher/teacher123",
           variant: "destructive",
         });
       }
