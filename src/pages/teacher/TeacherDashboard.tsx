@@ -2,18 +2,30 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { QrCode, LogOut, Clock, Users, FileText } from "lucide-react";
+import { QrCode, LogOut, Clock, Users, FileText, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import ManualAttendance from "@/components/ManualAttendance";
 
 const TeacherDashboard = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedSession, setSelectedSession] = useState<any>(null);
   const [showManualAttendance, setShowManualAttendance] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newLecture, setNewLecture] = useState({
+    subject: "",
+    class: "",
+    time: "",
+    day: "Monday"
+  });
 
   // Mock timetable data
-  const timetable = [
+  const [timetable, setTimetable] = useState([
     {
       id: 1,
       subject: "Computer Science 101",
@@ -43,10 +55,39 @@ const TeacherDashboard = () => {
       subject: "Database Systems",
       class: "CS-C",
       time: "16:00 - 17:30",
-      day: "Monday", 
+      day: "Monday",
       status: "upcoming"
     }
-  ];
+  ]);
+
+  const handleAddLecture = () => {
+    if (!newLecture.subject || !newLecture.class || !newLecture.time) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all fields",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newSession = {
+      id: timetable.length + 1,
+      subject: newLecture.subject,
+      class: newLecture.class,
+      time: newLecture.time,
+      day: newLecture.day,
+      status: "upcoming"
+    };
+
+    setTimetable([...timetable, newSession]);
+    setNewLecture({ subject: "", class: "", time: "", day: "Monday" });
+    setIsDialogOpen(false);
+    
+    toast({
+      title: "Lecture Added",
+      description: `${newLecture.subject} has been added to your schedule`,
+    });
+  };
 
   const handleGenerateQR = (session: any) => {
     setSelectedSession(session);
@@ -79,10 +120,60 @@ const TeacherDashboard = () => {
             <h1 className="text-3xl font-bold text-teacher">Teacher Dashboard</h1>
             <p className="text-muted-foreground">Manage your classes and attendance</p>
           </div>
-          <Button variant="outline" onClick={handleLogout}>
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
-          </Button>
+          <div className="flex gap-2">
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="teacher">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Lecture
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add New Lecture</DialogTitle>
+                  <DialogDescription>
+                    Enter the details for the new lecture
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="subject">Subject Name</Label>
+                    <Input
+                      id="subject"
+                      placeholder="e.g., Computer Science 101"
+                      value={newLecture.subject}
+                      onChange={(e) => setNewLecture({ ...newLecture, subject: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="class">Class Name</Label>
+                    <Input
+                      id="class"
+                      placeholder="e.g., CS-A"
+                      value={newLecture.class}
+                      onChange={(e) => setNewLecture({ ...newLecture, class: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="time">Time</Label>
+                    <Input
+                      id="time"
+                      placeholder="e.g., 09:00 - 10:30"
+                      value={newLecture.time}
+                      onChange={(e) => setNewLecture({ ...newLecture, time: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <Button onClick={handleAddLecture} className="w-full">
+                  Add Lecture
+                </Button>
+              </DialogContent>
+            </Dialog>
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
