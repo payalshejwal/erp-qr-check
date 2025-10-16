@@ -33,11 +33,11 @@ All colors MUST be HSL.
     --teacher-soft: 220 100% 20%;
     --teacher-accent: 220 100% 50%;
 
-    /* Student Portal - Emerald Green */
-    --student: 158 64% 52%;
+    /* Student Portal - Professional Blue (matching teacher/front page) */
+    --student: 217 91% 60%;
     --student-foreground: 0 0% 100%;
-    --student-soft: 158 64% 20%;
-    --student-accent: 158 64% 42%;
+    --student-soft: 217 91% 20%;
+    --student-accent: 217 91% 50%;
 
     /* Status Colors */
     --success: 142 76% 36%;
