@@ -19,6 +19,8 @@ const QRCodeGenerator = ({ session, onBack }: QRCodeGeneratorProps) => {
   const [qrCode, setQrCode] = useState<string>("");
   const [sessionToken, setSessionToken] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(60);
+  const [isExpired, setIsExpired] = useState(false);
 
   const generateQRCode = async () => {
     setIsGenerating(true);
@@ -66,7 +68,35 @@ const QRCodeGenerator = ({ session, onBack }: QRCodeGeneratorProps) => {
 
   useEffect(() => {
     generateQRCode();
+    setTimeRemaining(60);
+    setIsExpired(false);
   }, []);
+
+  // Countdown timer for QR code expiry
+  useEffect(() => {
+    if (timeRemaining <= 0) {
+      setIsExpired(true);
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeRemaining(prev => {
+        if (prev <= 1) {
+          setIsExpired(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeRemaining]);
+
+  const handleRegenerate = () => {
+    setTimeRemaining(60);
+    setIsExpired(false);
+    generateQRCode();
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-teacher-soft">
@@ -110,15 +140,28 @@ const QRCodeGenerator = ({ session, onBack }: QRCodeGeneratorProps) => {
                   </div>
                 ) : qrCode ? (
                   <div className="space-y-4">
-                    <div className="bg-white p-6 rounded-lg inline-block shadow-lg">
-                      <img src={qrCode} alt="Attendance QR Code" className="mx-auto" />
+                    {/* Timer Display */}
+                    <div className={`text-lg font-semibold ${isExpired ? 'text-destructive' : timeRemaining <= 10 ? 'text-orange-500' : 'text-teacher'}`}>
+                      {isExpired ? 'QR Code Expired' : `Time Remaining: ${timeRemaining}s`}
                     </div>
+                    
+                    <div className={`bg-white p-6 rounded-lg inline-block shadow-lg ${isExpired ? 'opacity-50 grayscale' : ''}`}>
+                      <img src={qrCode} alt="Attendance QR Code" className="mx-auto" />
+                      {isExpired && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="bg-destructive text-destructive-foreground px-4 py-2 rounded-lg font-bold">
+                            EXPIRED
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    
                     <div className="flex gap-2 justify-center">
-                      <Button variant="teacher-outline" onClick={generateQRCode}>
+                      <Button variant="teacher-outline" onClick={handleRegenerate}>
                         <RefreshCw className="h-4 w-4 mr-2" />
                         Regenerate
                       </Button>
-                      <Button variant="teacher" onClick={downloadQRCode}>
+                      <Button variant="teacher" onClick={downloadQRCode} disabled={isExpired}>
                         <Download className="h-4 w-4 mr-2" />
                         Download
                       </Button>

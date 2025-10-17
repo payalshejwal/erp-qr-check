@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,14 +25,20 @@ const TeacherDashboard = () => {
   });
 
   // Mock timetable data
-  const [timetable, setTimetable] = useState([
+  const [timetable, setTimetable] = useState<Array<{
+    id: number;
+    subject: string;
+    class: string;
+    time: string;
+    day: string;
+    status?: string;
+  }>>([
     {
       id: 1,
       subject: "Computer Science 101",
       class: "CS-A",
       time: "09:00 - 10:30",
       day: "Monday",
-      status: "upcoming"
     },
     {
       id: 2,
@@ -40,7 +46,6 @@ const TeacherDashboard = () => {
       class: "CS-B", 
       time: "11:00 - 12:30",
       day: "Monday",
-      status: "active"
     },
     {
       id: 3,
@@ -48,7 +53,6 @@ const TeacherDashboard = () => {
       class: "CS-A",
       time: "14:00 - 15:30", 
       day: "Monday",
-      status: "upcoming"
     },
     {
       id: 4,
@@ -56,9 +60,41 @@ const TeacherDashboard = () => {
       class: "CS-C",
       time: "16:00 - 17:30",
       day: "Monday",
-      status: "upcoming"
     }
   ]);
+
+  // Function to check if current time is within session time
+  const getSessionStatus = (timeSlot: string) => {
+    const now = new Date();
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+    
+    const [startTime, endTime] = timeSlot.split(' - ');
+    const [startHour, startMin] = startTime.split(':').map(Number);
+    const [endHour, endMin] = endTime.split(':').map(Number);
+    
+    const sessionStart = startHour * 60 + startMin;
+    const sessionEnd = endHour * 60 + endMin;
+    
+    if (currentTime >= sessionStart && currentTime <= sessionEnd) {
+      return "active";
+    }
+    return "upcoming";
+  };
+
+  // Update session statuses every minute
+  useEffect(() => {
+    const updateStatuses = () => {
+      setTimetable(prev => prev.map(session => ({
+        ...session,
+        status: getSessionStatus(session.time)
+      })));
+    };
+
+    updateStatuses();
+    const interval = setInterval(updateStatuses, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleAddLecture = () => {
     if (!newLecture.subject || !newLecture.class || !newLecture.time) {
@@ -76,7 +112,7 @@ const TeacherDashboard = () => {
       class: newLecture.class,
       time: newLecture.time,
       day: newLecture.day,
-      status: "upcoming"
+      status: getSessionStatus(newLecture.time)
     };
 
     setTimetable([...timetable, newSession]);
