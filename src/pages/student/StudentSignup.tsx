@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
 import { GraduationCap, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -106,18 +107,20 @@ const StudentSignup = () => {
         </button>
 
         {/* Signup Card */}
-        <div className="bg-card/50 backdrop-blur border border-border/50 rounded-2xl p-8">
-          {/* Header */}
-          <div className="flex items-center justify-center mb-8">
-            <div className="w-16 h-16 bg-background rounded-full flex items-center justify-center border border-border/50">
-              <GraduationCap className="h-8 w-8 text-foreground" />
+        <Card className="border-2 shadow-2xl shadow-student/10 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-student/5 to-transparent pointer-events-none" />
+          <div className="relative p-8">
+            {/* Header */}
+            <div className="flex items-center justify-center mb-8">
+              <div className="w-20 h-20 bg-student/10 rounded-full flex items-center justify-center">
+                <GraduationCap className="h-10 w-10 text-student" />
+              </div>
             </div>
-          </div>
 
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-semibold text-foreground mb-1">Create Student Account</h1>
-            <p className="text-sm text-muted-foreground">Smart Attendance Tracker</p>
-          </div>
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-foreground mb-2">Create Student Account</h1>
+              <p className="text-sm text-muted-foreground">Join our smart attendance platform</p>
+            </div>
 
           {/* Signup Form */}
           <form onSubmit={handleSignup} className="space-y-6">
@@ -188,7 +191,8 @@ const StudentSignup = () => {
 
             <Button
               type="submit"
-              className="w-full bg-foreground hover:bg-foreground/90 text-background font-medium py-6 rounded-full"
+              variant="student"
+              className="w-full h-12 text-base font-semibold"
               disabled={isLoading}
             >
               {isLoading ? "Creating Account..." : "Create Account"}
@@ -198,13 +202,14 @@ const StudentSignup = () => {
               <button
                 type="button"
                 onClick={() => navigate("/student/login")}
-                className="text-sm text-primary hover:underline"
+                className="text-sm text-student hover:underline"
               >
                 Already have an account? Sign in
               </button>
             </div>
           </form>
-        </div>
+          </div>
+        </Card>
       </div>
     </div>
   );

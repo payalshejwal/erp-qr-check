@@ -148,13 +148,13 @@ const TeacherDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-teacher-soft">
+    <div className="min-h-screen bg-gradient-to-br from-background via-teacher-soft/20 to-background">
       <div className="container mx-auto p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-teacher">Teacher Dashboard</h1>
-            <p className="text-muted-foreground">Manage your classes and attendance</p>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-teacher to-teacher-accent bg-clip-text text-transparent">Teacher Dashboard</h1>
+            <p className="text-muted-foreground mt-1">Manage your classes and track attendance</p>
           </div>
           <div className="flex gap-2">
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -214,72 +214,81 @@ const TeacherDashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card className="border-l-4 border-l-teacher hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Today's Classes</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
+              <div className="p-2 bg-teacher/10 rounded-lg">
+                <Clock className="h-5 w-5 text-teacher" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">4</div>
-              <p className="text-xs text-muted-foreground">1 active, 3 upcoming</p>
+              <div className="text-3xl font-bold text-foreground">4</div>
+              <p className="text-xs text-muted-foreground mt-1">1 active, 3 upcoming</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-l-4 border-l-success hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Students</CardTitle>
-              <Users className="h-4 w-4 text-muted-foreground" />
+              <div className="p-2 bg-success/10 rounded-lg">
+                <Users className="h-5 w-5 text-success" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">156</div>
-              <p className="text-xs text-muted-foreground">Across all classes</p>
+              <div className="text-3xl font-bold text-foreground">156</div>
+              <p className="text-xs text-muted-foreground mt-1">Across all classes</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-l-4 border-l-primary hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Avg Attendance</CardTitle>
-              <FileText className="h-4 w-4 text-muted-foreground" />
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <FileText className="h-5 w-5 text-primary" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">87%</div>
-              <p className="text-xs text-muted-foreground">This semester</p>
+              <div className="text-3xl font-bold text-foreground">87%</div>
+              <p className="text-xs text-muted-foreground mt-1">This semester</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Timetable */}
-        <Card>
+        <Card className="shadow-xl">
           <CardHeader>
-            <CardTitle className="text-teacher">Today's Schedule</CardTitle>
+            <CardTitle className="text-2xl">Today's Schedule</CardTitle>
             <CardDescription>Manage attendance for your classes</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {timetable.map((session) => (
                 <div
                   key={session.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-shadow"
+                  className="group flex items-center justify-between p-5 border-2 rounded-xl hover:border-teacher/50 hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
                 >
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold">{session.subject}</h3>
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="font-semibold text-lg">{session.subject}</h3>
                       <Badge 
                         variant={session.status === 'active' ? 'default' : 'secondary'}
-                        className={session.status === 'active' ? 'bg-success' : ''}
+                        className={session.status === 'active' ? 'bg-success text-white px-3 py-1' : 'px-3 py-1'}
                       >
                         {session.status}
                       </Badge>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      Class: {session.class} • {session.time}
+                    <p className="text-sm text-muted-foreground flex items-center gap-2">
+                      <span className="font-medium">Class: {session.class}</span>
+                      <span>•</span>
+                      <span>{session.time}</span>
                     </p>
                   </div>
                   <div className="flex gap-2">
                     <Button
-                      variant="teacher-outline"
+                      variant="outline"
                       size="sm"
                       onClick={() => handleManualAttendance(session)}
+                      className="group-hover:border-teacher group-hover:text-teacher"
                     >
                       <FileText className="h-4 w-4 mr-1" />
                       Manual
