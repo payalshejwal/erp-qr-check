@@ -19,6 +19,7 @@ const TeacherDashboard = () => {
   const [selectedSession, setSelectedSession] = useState<any>(null);
   const [showManualAttendance, setShowManualAttendance] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const [newLecture, setNewLecture] = useState({
     subject: "",
     class: "",
@@ -36,17 +37,40 @@ const TeacherDashboard = () => {
     status?: string;
   }>>([]);
 
+  // Check authentication
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/teacher/login");
+        return;
+      }
+      setUserId(session.user.id);
+    };
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        navigate("/teacher/login");
+      } else if (session) {
+        setUserId(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
   // Load lectures from database
   useEffect(() => {
-    const loadLectures = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+    if (!userId) return;
 
+    const loadLectures = async () => {
       const today = format(new Date(), 'EEEE');
       const { data, error } = await supabase
         .from('lectures')
         .select('*')
-        .eq('teacher_id', user.id)
+        .eq('teacher_id', userId)
         .eq('day_of_week', today)
         .order('start_time');
 
@@ -73,7 +97,8 @@ const TeacherDashboard = () => {
         {
           event: '*',
           schema: 'public',
-          table: 'lectures'
+          table: 'lectures',
+          filter: `teacher_id=eq.${userId}`
         },
         () => {
           loadLectures();
@@ -84,7 +109,7 @@ const TeacherDashboard = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [userId]);
 
   // Function to check if current time is past the session start time
   const getSessionStatus = (startTime: string, endTime: string) => {
@@ -126,8 +151,7 @@ const TeacherDashboard = () => {
       return;
     }
 
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
+    if (!userId) {
       toast({
         title: "Error",
         description: "You must be logged in to add lectures",
@@ -139,7 +163,7 @@ const TeacherDashboard = () => {
     const { error } = await supabase
       .from('lectures')
       .insert({
-        teacher_id: user.id,
+        teacher_id: userId,
         subject: newLecture.subject,
         class_name: newLecture.class,
         start_time: newLecture.startTime,
@@ -176,7 +200,8 @@ const TeacherDashboard = () => {
     setShowManualAttendance(true);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     navigate("/");
   };
 
