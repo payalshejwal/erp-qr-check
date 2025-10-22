@@ -16,7 +16,7 @@ const Home = () => {
               <GraduationCap className="h-12 w-12 text-primary" />
             </div>
           </div>
-          <h1 className="text-5xl font-bold text-foreground mb-3 bg-gradient-to-r from-primary to-student bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold text-foreground mb-3">
             Smart Attendance System
           </h1>
           <p className="text-lg text-muted-foreground">Choose your portal to get started</p>

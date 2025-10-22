@@ -33,11 +33,11 @@ All colors MUST be HSL.
     --teacher-soft: 221 83% 95%;
     --teacher-accent: 221 83% 45%;
 
-    /* Student Portal - Vibrant Purple */
-    --student: 262 83% 58%;
+    /* Student Portal - Same as Teacher */
+    --student: 221 83% 53%;
     --student-foreground: 0 0% 100%;
-    --student-soft: 262 83% 95%;
-    --student-accent: 262 83% 50%;
+    --student-soft: 221 83% 95%;
+    --student-accent: 221 83% 45%;
 
     /* Status Colors */
     --success: 142 76% 45%;
