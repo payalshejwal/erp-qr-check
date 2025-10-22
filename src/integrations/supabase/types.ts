@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      lectures: {
+        Row: {
+          class_name: string
+          created_at: string
+          day_of_week: string
+          end_time: string
+          id: string
+          start_time: string
+          subject: string
+          teacher_id: string
+          updated_at: string
+        }
+        Insert: {
+          class_name: string
+          created_at?: string
+          day_of_week: string
+          end_time: string
+          id?: string
+          start_time: string
+          subject: string
+          teacher_id: string
+          updated_at?: string
+        }
+        Update: {
+          class_name?: string
+          created_at?: string
+          day_of_week?: string
+          end_time?: string
+          id?: string
+          start_time?: string
+          subject?: string
+          teacher_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

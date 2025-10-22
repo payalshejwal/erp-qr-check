@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import QRCodeGenerator from "@/components/QRCodeGenerator";
 import ManualAttendance from "@/components/ManualAttendance";
+import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
 
 const TeacherDashboard = () => {
   const navigate = useNavigate();
@@ -20,62 +22,80 @@ const TeacherDashboard = () => {
   const [newLecture, setNewLecture] = useState({
     subject: "",
     class: "",
-    time: "",
-    day: "Monday"
+    startTime: "",
+    endTime: "",
+    day: format(new Date(), 'EEEE')
   });
-
-  // Mock timetable data
   const [timetable, setTimetable] = useState<Array<{
-    id: number;
+    id: string;
     subject: string;
-    class: string;
-    time: string;
-    day: string;
+    class_name: string;
+    start_time: string;
+    end_time: string;
+    day_of_week: string;
     status?: string;
-  }>>([
-    {
-      id: 1,
-      subject: "Computer Science 101",
-      class: "CS-A",
-      time: "09:00 - 10:30",
-      day: "Monday",
-    },
-    {
-      id: 2,
-      subject: "Data Structures",
-      class: "CS-B", 
-      time: "11:00 - 12:30",
-      day: "Monday",
-    },
-    {
-      id: 3,
-      subject: "Algorithms",
-      class: "CS-A",
-      time: "14:00 - 15:30", 
-      day: "Monday",
-    },
-    {
-      id: 4,
-      subject: "Database Systems",
-      class: "CS-C",
-      time: "16:00 - 17:30",
-      day: "Monday",
-    }
-  ]);
+  }>>([]);
 
-  // Function to check if current time is within session time
-  const getSessionStatus = (timeSlot: string) => {
+  // Load lectures from database
+  useEffect(() => {
+    const loadLectures = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const today = format(new Date(), 'EEEE');
+      const { data, error } = await supabase
+        .from('lectures')
+        .select('*')
+        .eq('teacher_id', user.id)
+        .eq('day_of_week', today)
+        .order('start_time');
+
+      if (error) {
+        console.error('Error loading lectures:', error);
+        return;
+      }
+
+      if (data) {
+        setTimetable(data.map(lecture => ({
+          ...lecture,
+          status: getSessionStatus(lecture.start_time, lecture.end_time)
+        })));
+      }
+    };
+
+    loadLectures();
+
+    // Subscribe to realtime updates
+    const channel = supabase
+      .channel('lectures-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'lectures'
+        },
+        () => {
+          loadLectures();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // Function to check if current time is within or past session time
+  const getSessionStatus = (startTime: string, endTime: string) => {
     const now = new Date();
     const currentTime = now.getHours() * 60 + now.getMinutes();
     
-    const [startTime, endTime] = timeSlot.split(' - ');
     const [startHour, startMin] = startTime.split(':').map(Number);
-    const [endHour, endMin] = endTime.split(':').map(Number);
-    
     const sessionStart = startHour * 60 + startMin;
-    const sessionEnd = endHour * 60 + endMin;
     
-    if (currentTime >= sessionStart && currentTime <= sessionEnd) {
+    // Session is active from start time till end of day
+    if (currentTime >= sessionStart) {
       return "active";
     }
     return "upcoming";
@@ -86,7 +106,7 @@ const TeacherDashboard = () => {
     const updateStatuses = () => {
       setTimetable(prev => prev.map(session => ({
         ...session,
-        status: getSessionStatus(session.time)
+        status: getSessionStatus(session.start_time, session.end_time)
       })));
     };
 
@@ -94,10 +114,10 @@ const TeacherDashboard = () => {
     const interval = setInterval(updateStatuses, 60000); // Update every minute
 
     return () => clearInterval(interval);
-  }, []);
+  }, [timetable.length]);
 
-  const handleAddLecture = () => {
-    if (!newLecture.subject || !newLecture.class || !newLecture.time) {
+  const handleAddLecture = async () => {
+    if (!newLecture.subject || !newLecture.class || !newLecture.startTime || !newLecture.endTime) {
       toast({
         title: "Missing Information",
         description: "Please fill in all fields",
@@ -106,17 +126,38 @@ const TeacherDashboard = () => {
       return;
     }
 
-    const newSession = {
-      id: timetable.length + 1,
-      subject: newLecture.subject,
-      class: newLecture.class,
-      time: newLecture.time,
-      day: newLecture.day,
-      status: getSessionStatus(newLecture.time)
-    };
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to add lectures",
+        variant: "destructive"
+      });
+      return;
+    }
 
-    setTimetable([...timetable, newSession]);
-    setNewLecture({ subject: "", class: "", time: "", day: "Monday" });
+    const { error } = await supabase
+      .from('lectures')
+      .insert({
+        teacher_id: user.id,
+        subject: newLecture.subject,
+        class_name: newLecture.class,
+        start_time: newLecture.startTime,
+        end_time: newLecture.endTime,
+        day_of_week: newLecture.day
+      });
+
+    if (error) {
+      console.error('Error adding lecture:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add lecture",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setNewLecture({ subject: "", class: "", startTime: "", endTime: "", day: format(new Date(), 'EEEE') });
     setIsDialogOpen(false);
     
     toast({
@@ -191,12 +232,21 @@ const TeacherDashboard = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="time">Time</Label>
+                    <Label htmlFor="startTime">Start Time</Label>
                     <Input
-                      id="time"
-                      placeholder="e.g., 09:00 - 10:30"
-                      value={newLecture.time}
-                      onChange={(e) => setNewLecture({ ...newLecture, time: e.target.value })}
+                      id="startTime"
+                      type="time"
+                      value={newLecture.startTime}
+                      onChange={(e) => setNewLecture({ ...newLecture, startTime: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="endTime">End Time</Label>
+                    <Input
+                      id="endTime"
+                      type="time"
+                      value={newLecture.endTime}
+                      onChange={(e) => setNewLecture({ ...newLecture, endTime: e.target.value })}
                     />
                   </div>
                 </div>
@@ -278,9 +328,9 @@ const TeacherDashboard = () => {
                       </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground flex items-center gap-2">
-                      <span className="font-medium">Class: {session.class}</span>
+                      <span className="font-medium">Class: {session.class_name}</span>
                       <span>•</span>
-                      <span>{session.time}</span>
+                      <span>{session.start_time} - {session.end_time}</span>
                     </p>
                   </div>
                   <div className="flex gap-2">
