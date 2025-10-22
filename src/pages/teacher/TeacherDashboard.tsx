@@ -86,7 +86,7 @@ const TeacherDashboard = () => {
     };
   }, []);
 
-  // Function to check if current time is within or past session time
+  // Function to check if current time is past the session start time
   const getSessionStatus = (startTime: string, endTime: string) => {
     const now = new Date();
     const currentTime = now.getHours() * 60 + now.getMinutes();
@@ -272,8 +272,10 @@ const TeacherDashboard = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-foreground">4</div>
-              <p className="text-xs text-muted-foreground mt-1">1 active, 3 upcoming</p>
+              <div className="text-3xl font-bold text-foreground">{timetable.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {timetable.filter(s => s.status === 'active').length} active, {timetable.filter(s => s.status === 'upcoming').length} upcoming
+              </p>
             </CardContent>
           </Card>
 
@@ -311,7 +313,13 @@ const TeacherDashboard = () => {
             <CardDescription>Manage attendance for your classes</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
+            {timetable.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No lectures scheduled for today</p>
+                <p className="text-sm mt-2">Click "Add Lecture" to create a new lecture</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
               {timetable.map((session) => (
                 <div
                   key={session.id}
@@ -355,6 +363,7 @@ const TeacherDashboard = () => {
                 </div>
               ))}
             </div>
+            )}
           </CardContent>
         </Card>
       </div>
