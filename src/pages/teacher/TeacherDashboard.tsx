@@ -372,6 +372,7 @@ const TeacherDashboard = () => {
                       size="sm"
                       onClick={() => handleManualAttendance(session)}
                       className="group-hover:border-teacher group-hover:text-teacher"
+                      disabled={session.status === 'upcoming'}
                     >
                       <FileText className="h-4 w-4 mr-1" />
                       Manual
@@ -380,6 +381,7 @@ const TeacherDashboard = () => {
                       variant="teacher"
                       size="sm"
                       onClick={() => handleGenerateQR(session)}
+                      disabled={session.status === 'upcoming'}
                     >
                       <QrCode className="h-4 w-4 mr-1" />
                       Generate QR
