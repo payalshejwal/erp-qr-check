@@ -109,11 +109,11 @@ const TeacherLogin = () => {
             {/* Login Form */}
             <form onSubmit={handleLogin} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Username</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="Enter your username"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="h-12"
